@@ -1,32 +1,14 @@
 from pyrogram import Client, filters
-import random
-import asyncio
-from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from pyrogram.errors import FloodWait
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, CallbackQuery
+from helper.database import db
+from config import Config, Txt
+import humanize
+from time import sleep
 
-from helper.database import codeflixbots
-from config import *
-from config import Config
 
-# Start Command Handler
 @Client.on_message(filters.private & filters.command("start"))
-async def start(client, message: Message):
-    user = message.from_user
-    await codeflixbots.add_user(client, message)
-
-    # Initial interactive text and sticker sequence
-    m = await message.reply_text("ʜᴇʜᴇ..ɪ'ᴍ ᴀɴʏᴀ!\nᴡᴀɪᴛ ᴀ ᴍᴏᴍᴇɴᴛ. . .")
-    await asyncio.sleep(0.4)
-    await m.edit_text("🎊")
-    await asyncio.sleep(0.5)
-    await m.edit_text("⚡")
-    await asyncio.sleep(0.5)
-    await m.edit_text("ᴡᴀᴋᴜ ᴡᴀᴋᴜ!...")
-    await asyncio.sleep(0.4)
-    await m.delete()
-
-    # Send sticker after the text sequence
-    await message.reply_sticker("CAACAgUAAxkBAAECroBmQKMAAQ-Gw4nibWoj_pJou2vP1a4AAlQIAAIzDxlVkNBkTEb1Lc4eBA")
+async def start(client, message):
     
     if message.from_user.id in Config.BANNED_USERS:
         await message.reply_text("Sorry, Bro You are banned.")
