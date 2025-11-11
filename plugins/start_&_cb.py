@@ -26,9 +26,6 @@ async def start(client, message):
     if message.from_user.id in Config.BANNED_USERS:
         await message.reply_text("Sorry, Bro You are banned.")
         return
-
-    user = message.from_user
-    await db.add_user(client, message)
     button = InlineKeyboardMarkup([[
         InlineKeyboardButton(
             '⛅ ᴜᴘᴅᴀᴛᴇs', url='https://t.me/All_animes_in_teluguu_vs'),
