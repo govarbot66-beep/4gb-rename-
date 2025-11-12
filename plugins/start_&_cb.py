@@ -30,32 +30,21 @@ async def start(client, message):
     await message.reply_sticker(
         "CAACAgUAAxkBAAECroBmQKMAAQ-Gw4nibWoj_pJou2vP1a4AAlQIAAIzDxlVkNBkTEb1Lc4eBA"
     )
-
-    # Inline buttons
-    buttons = InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton('⛅ ᴜᴘᴅᴀᴛᴇs', url='https://t.me/All_animes_in_teluguu_vs'),
-            InlineKeyboardButton('🌨️ sᴜᴘᴘᴏʀᴛ', url='https://t.me/All_animes_in_teluguu_vs')
-        ],
-        [
-            InlineKeyboardButton('❄️ ᴀʙᴏᴜᴛ', callback_data='about'),
-            InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help')
-        ]
-    ])
-
+    user = message.from_user
+    await db.add_user(client, message)
+    button = InlineKeyboardMarkup([[
+        InlineKeyboardButton(
+            '⛅ ᴜᴘᴅᴀᴛᴇs', url='All_animes_in_teluguu_vs'),
+        InlineKeyboardButton(
+            '🌨️ sᴜᴘᴘᴏʀᴛ', url='https://t.me/All_animes_in_teluguu_vs')
+    ], [
+        InlineKeyboardButton('❄️ ᴀʙᴏᴜᴛ', callback_data='about'),
+        InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help')
+    ]])
     if Config.START_PIC:
-        await message.reply_photo(
-            Config.START_PIC,
-            caption=Txt.START_TXT.format(message.from_user.mention),
-            reply_markup=buttons
-        )
+        await message.reply_photo(Config.START_PIC, caption=Txt.START_TXT.format(user.mention), reply_markup=button)
     else:
-        await message.reply_text(
-            text=Txt.START_TXT.format(message.from_user.mention),
-            reply_markup=buttons,
-            disable_web_page_preview=True
-        )
-
+        await message.reply_text(text=Txt.START_TXT.format(user.mention), reply_markup=button, disable_web_page_preview=True)
 
 
 @Client.on_message(filters.private & (filters.document | filters.audio | filters.video))
@@ -70,66 +59,60 @@ async def rename_start(client, message):
 
     try:
         text = f"""**__ᴡʜᴀᴛ ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴍᴇ ᴛᴏ ᴅᴏ ᴡɪᴛʜ ᴛʜɪs ғɪʟᴇ.?__**\n\n**ғɪʟᴇ ɴᴀᴍᴇ** :- `{filename}`\n\n**ғɪʟᴇ sɪᴢᴇ** :- `{filesize}`"""
-        buttons = [
-            [InlineKeyboardButton("📝 sᴛᴀʀᴛ ʀᴇɴᴀᴍᴇ 📝", callback_data="rename")],
-            [InlineKeyboardButton("✖️ ᴄᴀɴᴄᴇʟ ✖️", callback_data="close")]
-        ]
-        await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
+        buttons = [[InlineKeyboardButton("📝 sᴛᴀʀᴛ ʀᴇɴᴀᴍᴇ 📝", callback_data="rename")],
+                   [InlineKeyboardButton("✖️ ᴄᴀɴᴄᴇʟ ✖️", callback_data="close")]]
+        await message.reply_text(text=text, reply_to_message_id=message.id, reply_markup=InlineKeyboardMarkup(buttons))
     except FloodWait as e:
         await sleep(e.value)
-        await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
+        text = f"""**__What do you want me to do with this file.?__**\n\n**File Name** :- `{filename}`\n\n**File Size** :- `{filesize}`"""
+        buttons = [[InlineKeyboardButton("📝 sᴛᴀʀᴛ ʀᴇɴᴀᴍᴇ 📝", callback_data="rename")],
+                   [InlineKeyboardButton("✖️ ᴄᴀɴᴄᴇʟ ✖️", callback_data="close")]]
+        await message.reply_text(text=text, reply_to_message_id=message.id, reply_markup=InlineKeyboardMarkup(buttons))
     except:
         pass
-
 
 
 @Client.on_callback_query()
 async def cb_handler(client, query: CallbackQuery):
     data = query.data
-
     if data == "start":
         await query.message.edit_text(
             text=Txt.START_TXT.format(query.from_user.mention),
             disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([
-                [
-                    InlineKeyboardButton('⛅ Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/All_animes_in_teluguu_vs'),
-                    InlineKeyboardButton('🌨️ Sᴜᴩᴩᴏʀᴛ', url='https://t.me/All_animes_in_teluguu_vs')
-                ],
-                [
-                    InlineKeyboardButton('❄️ ᴀʙᴏᴜᴛ', callback_data='about'),
-                    InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help')
-                ]
-            ])
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton(
+                    '⛅ Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/All_animes_in_teluguu_vs'),
+                InlineKeyboardButton(
+                    '🌨️ Sᴜᴩᴩᴏʀᴛ', url='https://t.me/All_animes_in_teluguu_vs')
+            ], [
+                InlineKeyboardButton('❄️ ᴀʙᴏᴜᴛ', callback_data='about'),
+                InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help')
+            ]])
         )
-
     elif data == "help":
         await query.message.edit_text(
             text=Txt.HELP_TXT,
             disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([
-                [
-                    InlineKeyboardButton("✘ ᴄʟᴏsᴇ", callback_data="close"),
-                    InlineKeyboardButton("⟪ ʙᴀᴄᴋ", callback_data="start")
-                ]
-            ])
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("✘ ᴄʟᴏsᴇ", callback_data="close"),
+                InlineKeyboardButton("⟪ ʙᴀᴄᴋ", callback_data="start")
+            ]])
         )
-
     elif data == "about":
         await query.message.edit_text(
-            text=Txt.ABOUT_TXT.format(query.from_user.mention),
+            text=Txt.ABOUT_TXT.format(client.mention),
             disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([
-                [
-                    InlineKeyboardButton("✘ ᴄʟᴏsᴇ", callback_data="close"),
-                    InlineKeyboardButton("⟪ ʙᴀᴄᴋ", callback_data="start")
-                ]
-            ])
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("✘ ᴄʟᴏsᴇ", callback_data="close"),
+                InlineKeyboardButton("⟪ ʙᴀᴄᴋ", callback_data="start")
+            ]])
         )
 
     elif data == "close":
         try:
             await query.message.delete()
             await query.message.reply_to_message.delete()
+            await query.message.continue_propagation()
         except:
             await query.message.delete()
+            await query.message.continue_propagation()
